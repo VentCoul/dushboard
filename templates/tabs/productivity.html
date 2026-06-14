@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% set active_tab = 'productivity' %}
+{% block title %}Продуктивність{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+  <section class="card">
+    <h2>✅ Задачі з Obsidian</h2>
+    {% include "tabs/_tasks.html" %}
+
+    {% if vault_ok and project_files %}
+    <div class="sep"></div>
+    <form hx-post="/tasks/add" hx-target="#tasks" hx-swap="outerHTML settle:220ms"
+          hx-on::after-request="this.reset()"
+          style="display:flex;flex-direction:column;gap:8px;">
+      <input name="text" placeholder="Нова задача…" required class="a-input">
+      <div style="display:flex;gap:8px;">
+        <select name="file" class="a-input" style="flex:1;">
+          {% for f in project_files %}<option value="{{ f }}">{{ f }}</option>{% endfor %}
+        </select>
+        <button type="submit" class="a-btn a-btn-blue">Додати</button>
+      </div>
+    </form>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>🔁 Звички сьогодні</h2>
+    {% include "tabs/_habits.html" %}
+
+    <div class="sep"></div>
+    <form hx-post="/habits/add" hx-target="#habits" hx-swap="outerHTML settle:220ms"
+          hx-on::after-request="this.reset()"
+          style="display:flex;gap:8px;">
+      <input name="name" placeholder="Нова звичка…" required class="a-input">
+      <button type="submit" class="a-btn a-btn-green" style="white-space:nowrap;">Додати</button>
+    </form>
+  </section>
+
+</div>
+{% endblock %}

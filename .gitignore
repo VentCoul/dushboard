@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+data/dushboard.db
+data/vault/
+.venv/
+venv/

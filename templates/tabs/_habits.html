@@ -1,0 +1,16 @@
+<div id="habits">
+  {% if not habits %}
+    <p class="hint">Ще немає звичок. Додай першу нижче.</p>
+  {% else %}
+    <ul style="display:flex;flex-direction:column;gap:10px;">
+      {% for h in habits %}
+        <li style="display:flex;align-items:center;gap:10px;">
+          <input type="checkbox" class="a-check green" {{ 'checked' if h.done }}
+                 hx-post="/habits/toggle" hx-vals='{"id":"{{ h.id }}"}'
+                 hx-target="#habits" hx-swap="outerHTML settle:220ms">
+          <span style="{{ 'color:var(--label3);' if h.done }}font-size:14px;">{{ h.name }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% set active_tab = 'jobs' %}
+{% block title %}Пошук роботи{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+  <p style="font-size:22px;font-weight:600;letter-spacing:-0.5px;">💼 Пошук роботи</p>
+  <form action="/jobs/import" method="post">
+    <button class="a-btn a-btn-ghost" style="font-size:13px;">
+      {% if import_result is defined %}
+        {% if import_result == -1 %}⚠️ Бот недоступний
+        {% elif import_result == 0 %}✓ Нових немає
+        {% else %}✓ Додано {{ import_result }}
+        {% endif %}
+      {% else %}
+        ↓ Імпорт з бота
+      {% endif %}
+    </button>
+  </form>
+</div>
+
+{# Фільтр #}
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+  <a href="/jobs/" class="chip {{ 'active-chip' if not active_status }}">
+    Всі <span style="opacity:0.6;font-size:12px;margin-left:4px;">{{ counts.values()|sum }}</span>
+  </a>
+  {% for key, label, css in statuses %}
+    <a href="/jobs/?status={{ key }}" class="chip {{ 'active-chip' if active_status == key }}">
+      {{ label }} <span style="opacity:0.6;font-size:12px;margin-left:4px;">{{ counts.get(key, 0) }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+{# Форма додавання #}
+<details style="margin-bottom:16px;">
+  <summary style="list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+    <div class="a-btn a-btn-ghost" style="font-size:13px;pointer-events:none;">+ Додати вручну</div>
+  </summary>
+  <div class="card" style="margin-top:10px;">
+    <form action="/jobs/add" method="post"
+          style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <input name="title"   placeholder="Назва посади *" required class="a-input">
+      <input name="company" placeholder="Компанія *"     required class="a-input">
+      <input name="salary"  placeholder="Зарплата"                class="a-input">
+      <input name="url"     placeholder="Посилання" type="url"    class="a-input">
+      <button type="submit" class="a-btn a-btn-blue" style="grid-column:span 2;">Додати</button>
+    </form>
+  </div>
+</details>
+
+{% include "tabs/_jobs_list.html" %}
+{% endblock %}

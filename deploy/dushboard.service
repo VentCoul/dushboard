@@ -1,0 +1,15 @@
+[Unit]
+Description=Personal Dashboard (Flask + gunicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/dushboard
+EnvironmentFile=/root/dushboard/.env
+ExecStart=/root/dushboard/.venv/bin/gunicorn -w 2 -b 127.0.0.1:5050 app:app
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

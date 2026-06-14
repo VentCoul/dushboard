@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% set active_tab = 'widgets' %}
+{% block title %}Віджети{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+  <section class="card">
+    <h2>🌤 Погода</h2>
+    {% if weather.ok %}
+      <p style="font-size:42px;font-weight:200;letter-spacing:-2px;color:var(--label);">{{ weather.temp }}°</p>
+      <p style="font-size:14px;color:var(--label2);margin-top:2px;">{{ weather.city }}</p>
+      <div class="sep"></div>
+      <p style="font-size:13px;color:var(--label3);">
+        Макс {{ weather.t_max }}° · мін {{ weather.t_min }}° · {{ weather.precip }} мм
+      </p>
+    {% else %}
+      <p style="color:var(--orange);font-size:13px;">⚠️ {{ weather.error }}</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>🪙 Крипта</h2>
+    {% if crypto.ok %}
+      <ul style="display:flex;flex-direction:column;gap:12px;">
+        {% for c in crypto.coins %}
+          <li style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:14px;text-transform:capitalize;">{{ c.id }}</span>
+            <span style="text-align:right;">
+              <span style="font-size:14px;font-weight:500;">${{ '{:,.0f}'.format(c.price) if c.price and c.price >= 100 else c.price }}</span>
+              <span style="font-size:12px;margin-left:6px;color:{{ 'var(--green)' if c.change >= 0 else 'var(--red)' }};">
+                {{ '%+.1f'|format(c.change) }}%
+              </span>
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color:var(--orange);font-size:13px;">⚠️ {{ crypto.error }}</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>📅 Календар</h2>
+    {% if calendar.ok %}
+      {% if calendar.events %}
+        <ul style="display:flex;flex-direction:column;gap:10px;">
+          {% for e in calendar.events %}
+            <li style="display:flex;justify-content:space-between;gap:8px;font-size:13px;">
+              <span style="color:var(--label);">{{ e.title }}</span>
+              <span style="color:var(--label3);white-space:nowrap;">{{ e.when }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="hint">Немає найближчих подій</p>
+      {% endif %}
+    {% else %}
+      <p style="color:var(--orange);font-size:13px;">⚠️ {{ calendar.error }}</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>✉️ Пошта
+      {% if mail.ok %}
+        <span style="font-size:12px;font-weight:400;color:var(--label3);margin-left:6px;">{{ mail.unseen }} непрочитаних</span>
+      {% endif %}
+    </h2>
+    {% if mail.ok %}
+      <ul style="display:flex;flex-direction:column;gap:8px;">
+        {% for m in mail.messages %}
+          <li style="font-size:13px;">
+            <p style="color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.subject or '(без теми)' }}</p>
+            <p style="color:var(--label3);font-size:12px;margin-top:1px;">{{ m.from }}</p>
+          </li>
+        {% else %}
+          <li class="hint">Немає непрочитаних</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color:var(--orange);font-size:13px;">⚠️ {{ mail.error }}</p>
+    {% endif %}
+  </section>
+
+  <section class="card" style="grid-column:span 2;">
+    <h2>🐙 GitHub</h2>
+    {% if github.ok %}
+      <ul style="display:flex;flex-direction:column;gap:10px;">
+        {% for r in github.repos %}
+          <li style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <a href="{{ r.url }}" target="_blank"
+               style="color:var(--blue);font-size:14px;text-decoration:none;font-weight:500;">{{ r.name }}</a>
+            <span style="color:var(--label3);font-size:12px;white-space:nowrap;">★{{ r.stars }} · {{ r.pushed_at }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color:var(--orange);font-size:13px;">⚠️ {{ github.error }}</p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}

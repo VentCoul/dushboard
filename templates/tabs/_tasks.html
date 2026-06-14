@@ -1,0 +1,24 @@
+<div id="tasks">
+  {% if error %}
+    <p style="color:var(--orange);font-size:13px;margin-bottom:10px;">⚠️ {{ error }}</p>
+  {% endif %}
+  {% if not vault_ok %}
+    <p class="hint">Obsidian не підключено — налаштуй <code>VAULT_PATH</code> і Obsidian Git.</p>
+  {% elif not tasks %}
+    <p class="hint">Немає відкритих задач 🎉</p>
+  {% else %}
+    <ul style="display:flex;flex-direction:column;gap:10px;">
+      {% for t in tasks %}
+        <li style="display:flex;align-items:flex-start;gap:10px;">
+          <input type="checkbox" class="a-check" {{ 'checked' if t.done }}
+                 hx-post="/tasks/toggle" hx-vals='{"id":"{{ t.id }}"}'
+                 hx-target="#tasks" hx-swap="outerHTML settle:220ms">
+          <span style="{{ 'color:var(--label3);text-decoration:line-through;' if t.done }}font-size:14px;">
+            {{ t.text }}
+            <span style="color:var(--label3);font-size:12px;margin-left:4px;">· {{ t.project }}</span>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
